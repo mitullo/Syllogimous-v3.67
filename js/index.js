@@ -293,9 +293,7 @@ function handleSfxChange(event) {
 
 function handleFastUiChange(event) {
     appState.fastUi = event.target.checked;
-    appState.staticButtons = event.target.checked;
     removeFastFeedback();
-    switchButtons();
     refresh();
 }
 
@@ -398,18 +396,6 @@ function carouselBack() {
 function carouselNext() {
     carouselIndex++;
     renderCarousel();
-}
-
-function switchButtons() {
-    const parent = document.querySelectorAll(".confirmation-buttons");
-    for (let p of parent) {
-        const firstChild = p.firstElementChild;
-        if (appState.staticButtons && firstChild.classList.contains('confirmation-true')) {
-            return;
-        }
-        p.removeChild(firstChild);
-        p.appendChild(firstChild);
-    }
 }
 
 function startCountDown() {
@@ -567,10 +553,6 @@ function init() {
     question = generateQuestion();
     if (!question) {
         return;
-    }
-
-    if (coinFlip()) {
-        switchButtons();
     }
 
     stopCountDown();
@@ -1055,5 +1037,4 @@ document.addEventListener("keydown", handleKeyPress);
 
 registerEventHandlers();
 load();
-switchButtons();
 init();
