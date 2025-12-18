@@ -69,9 +69,9 @@ class DistinctionQuestion {
         ]
 
         premises = scramble(premises);
-        premises = premises.map(p => createPremiseHTML(p, false));
+        premises = premises.map((p, index) => createPremiseHTML(p, false, index, premises.length));
 
-        if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
+        if (savedata.enableMeta && !savedata.minimalMode && !savedata.halfMinimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
