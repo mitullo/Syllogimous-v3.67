@@ -314,7 +314,7 @@ class DirectionQuestion {
         if (numInterleaved === 0) {
             premises = scramble(premises);
         }
-        premises = premises.map(p => createPremiseHTML(p));
+        premises = premises.map((p, index) => createPremiseHTML(p, true, index, premises.length));
         conclusion = createBasicPremiseHTML(conclusion);
         const countdown = this.generator.getCountdown();
         const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
@@ -379,7 +379,7 @@ class DirectionQuestion {
         }
         conclusion += analogyTo(c, d);
 
-        premises = premises.map(p => createPremiseHTML(p));
+        premises = premises.map((p, index) => createPremiseHTML(p, true, index, premises.length));
         const countdown = this.generator.getCountdown();
         const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
         let modifiers = [];
