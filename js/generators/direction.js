@@ -293,11 +293,26 @@ class DirectionQuestion {
         if (numTransforms > 0) {
             [wordCoordMap, operations, hardModeDimensions] = new SpaceHardMode(numTransforms).basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
             [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
-            if (numInterleaved > 0) {
-                premises.push(...operations);
-                operations = [];
-                hardModeDimensions = conclusionCoord.map((d,i) => i);
+        if (numInterleaved > 0) {
+            // Apply half minimal mode to operations if enabled
+            if (savedata.halfMinimalMode) {
+                operations = operations.map((op, opIndex) => {
+                    const totalOps = operations.length;
+                    let useMinimalMode = false;
+                    if (savedata.halfMinimalModeRandom) {
+                        // Use seeded random based on operation index for consistent assignment
+                        const seed = (opIndex * 9301 + 49297) % 233280; // Simple pseudo-random
+                        useMinimalMode = (seed / 233280) < 0.5;
+                    } else {
+                        useMinimalMode = opIndex < Math.ceil(totalOps / 2);
+                    }
+                    return applyMinimalModeToOperation(op, useMinimalMode);
+                });
             }
+            premises.push(...operations);
+            operations = [];
+            hardModeDimensions = conclusionCoord.map((d,i) => i);
+        }
         }
 
         let isValid;
