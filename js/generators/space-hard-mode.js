@@ -274,3 +274,27 @@ function createRotationTemplate(a, b, planeOp, planeName, degree) {
     const relation = savedata.minimalMode ? `${planeName} ${degree}` : `is ${planeOp} ${degree} around`;
     return `<span class="subject">${b}</span> <span class="relation">${relation}</span> <span class="subject">${a}</span>`;
 }
+
+function applyMinimalModeToOperation(operationHtml, useMinimalMode) {
+    // The operations are generated in regular mode, so we only need to convert to minimal mode
+    if (!useMinimalMode) {
+        return operationHtml;
+    }
+
+    // Convert to minimal mode
+    let result = operationHtml;
+
+    // Mirror: "is <span class="highlight">X</span>-mirrored across" -> "X🪞"
+    result = result.replace(/is <span class="highlight">([^<]+)<\/span>-mirrored across/g, '$1🪞');
+
+    // Scale: "is <span class="highlight">X</span>-scaled <span class="highlight">2×</span> from" -> "X↔️"
+    result = result.replace(/is <span class="highlight">([^<]+)<\/span>-scaled <span class="highlight">[^<]+<\/span> from/g, '$1↔️');
+
+    // Set: "<span class="highlight">X</span> of <span class="subject">A</span> is set to <span class="highlight">X</span> of <span class="subject">B</span>" -> "X :="
+    result = result.replace(/<span class="highlight">([^<]+)<\/span> of <span class="subject">([^<]+)<\/span> is set to <span class="highlight">([^<]+)<\/span> of <span class="subject">([^<]+)<\/span>/g, '$1 :=');
+
+    // Rotation: "is XZ-rotated 90°↷ around" -> "XZ 90°↷"
+    result = result.replace(/is ([^<]+) around/g, '$1');
+
+    return result;
+}
