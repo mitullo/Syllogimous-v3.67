@@ -10,7 +10,16 @@ function createPremiseHTML(premise, allowReversal=true, index=0, totalPremises=1
 }
 
 function createBasicPremiseHTML(premise, allowReversal=true, index=0, totalPremises=1) {
-    const useMinimalMode = savedata.minimalMode || (savedata.halfMinimalMode && index < Math.ceil(totalPremises / 2));
+    let useMinimalMode = savedata.minimalMode;
+    if (savedata.halfMinimalMode) {
+        if (savedata.halfMinimalModeRandom) {
+            // Use seeded random based on index for consistent assignment
+            const seed = (index * 9301 + 49297) % 233280; // Simple pseudo-random
+            useMinimalMode = (seed / 233280) < 0.5;
+        } else {
+            useMinimalMode = index < Math.ceil(totalPremises / 2);
+        }
+    }
     const relation = useMinimalMode ? premise.relationMinimal : premise.relation;
     const reverse = useMinimalMode ? premise.reverseMinimal : premise.reverse;
     let ps;
@@ -37,7 +46,16 @@ function createWidePremiseHTML(premise, allowReversal=true, index=0, totalPremis
     if (right.end === left.start) {
         [left, right] = [right, left];
     }
-    const useMinimalMode = savedata.minimalMode || (savedata.halfMinimalMode && index < Math.ceil(totalPremises / 2));
+    let useMinimalMode = savedata.minimalMode;
+    if (savedata.halfMinimalMode) {
+        if (savedata.halfMinimalModeRandom) {
+            // Use seeded random based on index for consistent assignment
+            const seed = (index * 9301 + 49297) % 233280; // Simple pseudo-random
+            useMinimalMode = (seed / 233280) < 0.5;
+        } else {
+            useMinimalMode = index < Math.ceil(totalPremises / 2);
+        }
+    }
     const leftRelation = useMinimalMode ? left.relationMinimal : left.relation;
     const leftReverse = useMinimalMode ? left.reverseMinimal : left.reverse;
     const rightRelation = useMinimalMode ? right.relationMinimal : right.relation;
