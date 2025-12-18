@@ -125,9 +125,9 @@ class LinearQuestion {
         }
 
         premises = scramble(premises);
-        premises = premises.map(p => createPremiseHTML(p));
+        premises = premises.map((p, index) => createPremiseHTML(p, true, index, premises.length));
 
-        if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
+        if (savedata.enableMeta && !savedata.minimalMode && !savedata.halfMinimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
