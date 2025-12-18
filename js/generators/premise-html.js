@@ -1,17 +1,18 @@
-function createPremiseHTML(premise, allowReversal=true) {
+function createPremiseHTML(premise, allowReversal=true, index=0, totalPremises=1) {
     if (typeof premise === 'string') {
         return premise;
     }
     if (savedata.widePremises && Array.isArray(premise)) {
-        return createWidePremiseHTML(premise, allowReversal);
+        return createWidePremiseHTML(premise, allowReversal, index, totalPremises);
     } else {
-        return createBasicPremiseHTML(premise, allowReversal);
+        return createBasicPremiseHTML(premise, allowReversal, index, totalPremises);
     }
 }
 
-function createBasicPremiseHTML(premise, allowReversal=true) {
-    const relation = savedata.minimalMode ? premise.relationMinimal : premise.relation;
-    const reverse = savedata.minimalMode ? premise.reverseMinimal : premise.reverse;
+function createBasicPremiseHTML(premise, allowReversal=true, index=0, totalPremises=1) {
+    const useMinimalMode = savedata.minimalMode || (savedata.halfMinimalMode && index < Math.ceil(totalPremises / 2));
+    const relation = useMinimalMode ? premise.relationMinimal : premise.relation;
+    const reverse = useMinimalMode ? premise.reverseMinimal : premise.reverse;
     let ps;
     if (!allowReversal || coinFlip()) {
       ps = [
@@ -27,19 +28,20 @@ function createBasicPremiseHTML(premise, allowReversal=true) {
     return pickNegatable(ps);
 }
 
-function createWidePremiseHTML(premise, allowReversal=true) {
+function createWidePremiseHTML(premise, allowReversal=true, index=0, totalPremises=1) {
     if (premise.length === 1) {
-        return createBasicPremiseHTML(premise[0], allowReversal);
+        return createBasicPremiseHTML(premise[0], allowReversal, index, totalPremises);
     }
 
     let [left, right] = premise;
     if (right.end === left.start) {
         [left, right] = [right, left];
     }
-    const leftRelation = savedata.minimalMode ? left.relationMinimal : left.relation;
-    const leftReverse = savedata.minimalMode ? left.reverseMinimal : left.reverse;
-    const rightRelation = savedata.minimalMode ? right.relationMinimal : right.relation;
-    const rightReverse = savedata.minimalMode ? right.reverseMinimal : right.reverse;
+    const useMinimalMode = savedata.minimalMode || (savedata.halfMinimalMode && index < Math.ceil(totalPremises / 2));
+    const leftRelation = useMinimalMode ? left.relationMinimal : left.relation;
+    const leftReverse = useMinimalMode ? left.reverseMinimal : left.reverse;
+    const rightRelation = useMinimalMode ? right.relationMinimal : right.relation;
+    const rightReverse = useMinimalMode ? right.reverseMinimal : right.reverse;
     let a, b, c, ab, bc, abRev, bcRev;
     if (left.end === right.start) {
         a = left.start;
